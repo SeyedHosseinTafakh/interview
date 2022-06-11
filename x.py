@@ -36,12 +36,22 @@ def upload_filer():
       list=[]
 
       for each in shp_files:
+#          print(each.split('/')[1])
           sql = "INSERT INTO files (address) values (%s) "
-          mycursor.execute(sql, [each])
+          mycursor.execute(sql, [each.split('/')[1]])
       mydb.commit()
-      # for each in shp_files:
-      #     mycursor.execute('insert into ')
+      for each in shp_files:
+          read_data(each.split('/')[1])
       return 'file uploaded successfully'
-		
+
+def read_data(file_name):
+    sql = "select * from files where address = %s"
+    mycursor.execute(sql,[file_name])
+
+    myresult = mycursor.fetchall()
+
+    for x in myresult:
+      return x
+
 if __name__ == '__main__':
    app.run(debug = True)
