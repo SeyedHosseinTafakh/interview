@@ -34,12 +34,11 @@ def upload_filer():
          zip_ref.extractall("extract_folder")
       shp_files =(glob.glob('extract_folder/Test Sample/*.shp'))
       list=[]
+
       for each in shp_files:
-          print(each )
-          # list.append(tuple(each))
-      print(list)
-      #sql = 'insert into files (address) values (%s,) '
-      #mycursor.executemany(sql,shp_files)
+          sql = "INSERT INTO files (address) values (%s) "
+          mycursor.execute(sql, [each])
+      mydb.commit()
       # for each in shp_files:
       #     mycursor.execute('insert into ')
       return 'file uploaded successfully'
