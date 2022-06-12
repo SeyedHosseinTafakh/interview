@@ -19,4 +19,4 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
-mycursor.execute("CREATE TABLE files (id int AUTO_INCREMENT, address VARCHAR(255),task_status bit(1),primary key (`id`) )")
+mycursor.execute("CREATE TABLE files (id int AUTO_INCREMENT, address VARCHAR(255),stored_name VARCHAR(255),primary key (`id`) )")

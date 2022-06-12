@@ -5,6 +5,7 @@ from shapely.geometry import Polygon
 import folium
 from PIL import Image
 import io
+import uuid
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -42,5 +43,7 @@ def write_data(file_name):
     folium.GeoJson(polygon).add_to(m)
     folium.LatLngPopup().add_to(m)
 
-    m.save('x.html')
+    file_name = str(uuid.uuid1())
+
+    m.save('stored_files/'+file_name+'.html')
 

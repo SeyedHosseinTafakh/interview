@@ -4,6 +4,9 @@ import zipfile
 import os
 import glob
 import mysql.connector
+import uuid
+
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
@@ -20,7 +23,7 @@ app.config['UPLOAD_EXTENSIONS'] = ['zip']
 def upload_file():
    return render_template('upload.html')
 	
-@app.route('/uploader', methods = ['GET', 'POST'])
+@app.route('/uploader', methods = [ 'POST'])
 def upload_filer():
    if request.method == 'POST':
       f = request.files['file']
@@ -33,25 +36,13 @@ def upload_filer():
       with zipfile.ZipFile(secure_filename(f.filename), "r") as zip_ref:
          zip_ref.extractall("extract_folder")
       shp_files =(glob.glob('extract_folder/Test Sample/*.shp'))
-      list=[]
 
       for each in shp_files:
-#          print(each.split('/')[1])
           sql = "INSERT INTO files (address) values (%s) "
           mycursor.execute(sql, [each.split('/')[1]])
       mydb.commit()
-      for each in shp_files:
-          read_data(each.split('/')[1])
       return 'file uploaded successfully'
 
-def read_data(file_name):
-    sql = "select * from files where address = %s"
-    mycursor.execute(sql,[file_name])
-
-    myresult = mycursor.fetchall()
-
-    for x in myresult:
-      return x
 
 if __name__ == '__main__':
    app.run(debug = True)
