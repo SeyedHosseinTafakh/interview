@@ -6,6 +6,9 @@ import folium
 from PIL import Image
 import io
 import uuid
+from celery import Celery
+
+app = Celery('tasks', broker='pyamqp://guest@localhost//')
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -25,25 +28,29 @@ def read_data(file_name):
     myresult = mycursor.fetchall()
 
     for x in myresult:
-      return x[1]
+      return x
 @app.task
 def write_data(file_name):
 
-    g_df = gpd.read_file(read_data(file_name=file_name))
-    print(g_df.head())
+    #print(read_data(file_name))
+    g_df = gpd.read_file(file_name)
+    #print(g_df.head())
 
     lat_point_list = g_df.centroid.x[::2] / 10000.0
     lon_point_list = g_df.centroid.y[::2] / 10000.0
 
     polygon_geom = Polygon(zip(lon_point_list, lat_point_list))
-
     crs = {'init': 'epsg:4326'}
     polygon = gpd.GeoDataFrame(index=[0], crs=crs, geometry=[polygon_geom])
     m = folium.Map([g_df.centroid.x[0] / 10000.0, g_df.centroid.y[0] / 10000.0], zoom_start=12, tiles='cartodbpositron')
     folium.GeoJson(polygon).add_to(m)
     folium.LatLngPopup().add_to(m)
-
-    file_name = str(uuid.uuid1())
-
-    m.save('stored_files/'+file_name+'.html')
+    sql="update files set stored_name = %s where id = %s"
+    
+    stored_file_name = str(uuid.uuid1())
+    print(stored_file_name)
+    print(read_data(file_name)[0])
+    val = [stored_file_name+'.html',read_data(file_name)[0]]
+    mycursor.execute(sql,val)
+    m.save('stored_files/'+stored_file_name+'.html')
 

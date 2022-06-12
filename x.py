@@ -6,6 +6,7 @@ import glob
 import mysql.connector
 import uuid
 
+from tasks import write_data
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -39,7 +40,8 @@ def upload_filer():
 
       for each in shp_files:
           sql = "INSERT INTO files (address) values (%s) "
-          mycursor.execute(sql, [each.split('/')[1]])
+          mycursor.execute(sql, [each])
+          write_data.delay(each)
       mydb.commit()
       return 'file uploaded successfully'
 
