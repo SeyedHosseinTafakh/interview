@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import zipfile
 import os
@@ -6,7 +6,7 @@ import glob
 import mysql.connector
 import uuid
 
-#from tasks import write_data
+from tasks import write_data
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -43,7 +43,7 @@ def upload_filer():
           mycursor.execute(sql, [each])
           write_data.delay(each)
       mydb.commit()
-      return 'file uploaded successfully'
+      return redirect(url_for('read_files'))
 @app.route('/read_files',methods=['GET'])
 def read_files():
     sql='select * from files'

@@ -52,5 +52,6 @@ def write_data(file_name):
     print(read_data(file_name)[0])
     val = [stored_file_name+'.html',read_data(file_name)[0]]
     mycursor.execute(sql,val)
+    mydb.commit()
     m.save('stored_files/'+stored_file_name+'.html')
 
