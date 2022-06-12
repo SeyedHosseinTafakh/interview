@@ -6,7 +6,7 @@ import glob
 import mysql.connector
 import uuid
 
-from tasks import write_data
+#from tasks import write_data
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -44,7 +44,16 @@ def upload_filer():
           write_data.delay(each)
       mydb.commit()
       return 'file uploaded successfully'
-
-
+@app.route('/read_files',methods=['GET'])
+def read_files():
+    sql='select * from files'
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    return render_template('showing_data.html',my_maps=myresult)
+@app.route('/map/<name>',methods=['GET'])
+def load_map(name):
+    with open('stored_files/'+name, "r", encoding='utf-8') as f:
+        text = f.read()
+    return text
 if __name__ == '__main__':
    app.run(debug = True)

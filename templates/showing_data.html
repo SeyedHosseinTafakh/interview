@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+<table>
+  <tr>
+    <th>id</th>
+    <th>file_name</th>
+    <th>map_link</th>
+  </tr>
+    {% for each in my_maps %}
+  <tr>
+    <td>{{ each[0] }}</td>
+    <td>{{ each[1] }}</td>
+    <td>{{ each[2] }}</td>
+  </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
