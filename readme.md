@@ -1,4 +1,4 @@
-# thank you for the given opportunity !
+# this project was an interview challenge for getting shape files (.shp) as zip file and showing converting it to map files in html format using server/worker !
 
 for starting the project i assume the user have a running mysql server,rabbitmq server and knows how to connect gunicorn to nginx;
 
